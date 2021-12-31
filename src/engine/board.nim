@@ -1,10 +1,10 @@
 import
-    engine/math
+    utils
 
 
 # Types
 type
-	Warp * = object
+    Warp * = object
         zone : Zone
         reference, toTarget : Vec2i
         rotate   , toLevel  : int
@@ -21,10 +21,10 @@ type
 ### WARP
 
 # check if the position is inside the zone
-proc `in` * (warp : Warp; pos : Position) : bool {.inline.} =
+proc `in` * (pos : Position; warp : Warp) : bool {.inline.} =
     pos in warp.zone
 
-proc `notin` * (warp : Warp; pos : Position) : bool {.inline.} =
+proc `notin` * (pos : Position; warp : Warp) : bool {.inline.} =
     pos notin warp.zone
 
 
@@ -32,7 +32,7 @@ proc `notin` * (warp : Warp; pos : Position) : bool {.inline.} =
 proc warp * (warp : Warp; pos : Position; orient : int) : Transform {.inline.} =
     let newCoords = (pos.coords - warp.reference).rotate(warp.rotate) + warp.toTarget
     let newOrient = (orient + warp.rotate) mod CARDINAL
-    Transform(Position(warp.level, newCoords), newOrient)
+    ((warp.zone.level, newCoords), newOrient)
 
 
 
@@ -55,9 +55,9 @@ proc `notin` * (board : Board; pos : Position) : bool {.inline.} =
 # rebound the position according to warp zones
 proc rebound * (board : Board; pos : Position; orient : int) : Transform {.inline.} =
     # if the position is in a warp zone warp it
-    for warp in warpZones:
+    for warp in board.warpZones:
         if pos in warp:
             return warp.warp(pos, orient)
     # else do nothing
-    Transform(pos, orient)
+    (pos, orient)
 

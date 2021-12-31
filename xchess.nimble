@@ -5,7 +5,7 @@ author        = "Olivier Schyns"
 description   = "Extended Chess Game"
 license       = "MIT"
 srcDir        = "src"
-bin           = @["xchess"]
+bin           = @["xchess.exe"]
 
 
 # Dependencies

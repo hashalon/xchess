@@ -1,5 +1,5 @@
 import
-    engine/math
+    utils,
     std/tables
 
 
@@ -21,7 +21,7 @@ type
     
     # container to store pieces
     PieceSet * = ref object
-        _pieces : Table[Position; Piece]
+        pieces : Table[Position, Piece]
     
     CellFlag * = enum
         cfOutOfBound = -1,
@@ -34,7 +34,7 @@ type
 const
     NO_TEAM  = -1
     
-	NO_PIECE * = Piece(
+    NO_PIECE * = Piece(
         team        : NO_TEAM,
         pieceType   : tNone,
         orientation : 0)
@@ -45,10 +45,10 @@ const
 
 # accessors
 proc `[]` * (pset : PieceSet; pos : Position) : Piece {.inline.} =
-    pset._pieces.getOrDefault(pos, NO_PIECE)
+    pset.pieces.getOrDefault(pos, NO_PIECE)
 
 proc `[]=` * (pset : var PieceSet; pos : Position; piece : Piece) {.inline.} =
-    pset._pieces[pos] = piece
+    pset.pieces[pos] = piece
 
 # simply return the flag for the given cell
 proc getFlag * (pset : PieceSet; pos : Position, team : int) : CellFlag {.inline.} =
