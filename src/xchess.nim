@@ -1,5 +1,5 @@
 import
-    engine/[board, pieces]
+    engine/boardbuilder
 
 
 # This is just an example to get you started. A typical binary package

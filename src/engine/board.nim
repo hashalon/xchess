@@ -5,14 +5,14 @@ import
 # Types
 type
     Warp * = object
-        zone : Zone
-        reference, toTarget : Vec2i
-        rotate   , toLevel  : int
+        zone * : Zone
+        reference *, toTarget * : Vec2i
+        rotate    *, toLevel  * : int
 
     # define the boundaries and the warps of the board
     Board * = ref object
-        validZones : seq[Zone]
-        warpZones  : seq[Warp]
+        validZones * : seq[Zone]
+        warpZones  * : seq[Warp]
 
     Transform * = tuple[position : Position, orientation : int]
 
