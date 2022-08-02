@@ -66,3 +66,28 @@ proc clone * (pset: PieceSet): PieceSet {.inline.} =
 proc move * (pset: var PieceSet, from_pos: Position, to_pos: Position) {.inline.} =
     pset[  to_pos] = pset[from_pos]
     pset[from_pos] = NO_PIECE
+
+
+# get the list of moves for the given type of piece
+proc leaperDirections * (ptype: PieceType): seq[Vec2i] {.inline.} =
+    case ptype:
+        of tKing:
+            return @[(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
+        of tKnight:
+            return @[(2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1)]
+        else:
+            return @[]
+
+
+# get the list of moves for the given type of piece
+proc riderDirections * (ptype: PieceType): seq[Vec2i] {.inline.} =
+    case ptype:
+        of tQueen:
+            return @[(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
+        of tBishop:
+            return @[(1, 1), (-1, 1), (-1, -1), (1, -1)]
+        of tRook:
+            return @[(1, 0), (0, 1), (-1, 0), (0, -1), ]
+        else:
+            return @[]
+

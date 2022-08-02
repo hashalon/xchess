@@ -47,7 +47,7 @@ proc getLeaperMoves * (board: Board, pset: PieceSet, trs: Transform, team: Team,
         if flag == fEnemy or flag == fEmpty:
             trsList.add(trs1)
     trsList
-        
+
 
 # return a list of positions
 proc getRiderMoves * (board: Board, pset: PieceSet, trs: Transform, team: Team, dirs: seq[Vec2i]): seq[Transform] =
@@ -57,3 +57,20 @@ proc getRiderMoves * (board: Board, pset: PieceSet, trs: Transform, team: Team, 
     concat(metaList)
 
 
+# manage pawn moves differently
+proc getPawnMoves * (board: Board, pset: PieceSet, trs: Transform, team: Team, rot: Rotation): seq[Transform] =
+    # test the direction
+    let (flagF, trsF, _) = checkMove(board, pset, trs + ( 0, 1).rotate(rot), team)
+    let (flagL, trsL, _) = checkMove(board, pset, trs + (-1, 1).rotate(rot), team)
+    let (flagR, trsR, _) = checkMove(board, pset, trs + ( 1, 1).rotate(rot), team)
+
+    # generate the list of motions
+    var trsList: seq[Transform] = @[]
+    if flagF == fEmpty: trsList.add(trsF)
+    if flagL == fEnemy: trsList.add(trsL)
+    if flagR == fEnemy: trsList.add(trsR)
+    trsList
+    
+
+# manage specific moves separately
+# TODO...
