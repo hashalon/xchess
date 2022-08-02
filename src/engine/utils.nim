@@ -4,16 +4,13 @@ import
 
 # Types
 type
-    Vec2i * = tuple[x , y : int]
-    Rec2i * = tuple[p1, p2: Vec2i]
-
-    Team     * = int
-    Rotation * = int
-    Level    * = int
-
-    Position * = tuple[level: Level, coords   : Vec2i]
-    Zone     * = tuple[level: Level, rectangle: Rec2i]
-
+    Vec2i     * = tuple[x , y : int]
+    Rec2i     * = tuple[p1, p2: Vec2i]
+    Team      * = int
+    Rotation  * = int
+    Level     * = int
+    Position  * = tuple[level: Level, coords   : Vec2i]
+    Zone      * = tuple[level: Level, rectangle: Rec2i]
     Transform * = tuple[position: Position, rotation: Rotation]
 
 

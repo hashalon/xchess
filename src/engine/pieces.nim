@@ -32,7 +32,7 @@ type
 
 # Constants
 const
-    NO_TEAM  = -1
+    NO_TEAM = -1
     
     NO_PIECE * = Piece(
         team      : NO_TEAM,
