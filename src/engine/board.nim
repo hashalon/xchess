@@ -30,7 +30,7 @@ proc `notin` * (pos: Position, warp: Warp): bool {.inline.} =
 # transform a vector based on this warp
 proc warp * (warp: Warp, pos: Vec2i, rot: Rotation): Transform {.inline.} =
     let newPos = (pos - warp.reference).rotate(warp.rotate) + warp.toTarget
-    let newRot = (rot + warp.rotate) mod CARDINAL
+    let newRot = (rot + warp.rotate) mod cardinality
     ((warp.zone.level, newPos), newRot)
 
 

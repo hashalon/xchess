@@ -16,11 +16,11 @@ type
 
 # Constants
 const
-    CARDINAL * =  4
-    NO_LEVEL * = -1
+    cardinality * =  4
+    noLevel     * = -1
     
-    VECTOR_ZERO * : Vec2i = (0, 0)
-    NO_POSITION * : Position = (NO_LEVEL, VECTOR_ZERO)
+    vecZero    * : Vec2i = (0, 0)
+    noPosition * : Position = (noLevel, vecZero)
 
 
 ### VECTOR
@@ -79,7 +79,7 @@ proc `mod` * (vec: Vec2i, val: int): Vec2i {.inline.} =
 
 # rotate the vector
 proc rotate * (vec: Vec2i, rot: Rotation): Vec2i {.inline.} =
-    case rot mod CARDINAL:
+    case rot mod cardinality:
         of 1, -3: (-vec.y,  vec.x)
         of 2, -2: (-vec.x, -vec.y)
         of 3, -1: ( vec.y, -vec.x)

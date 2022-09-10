@@ -6,37 +6,38 @@ import
 # Types
 type
     PieceType * = enum
-        tNone = -1,
-        tKing = 0,
-        tPawn,
-        tRook,
-        tKnight,
-        tBishop,
-        tQueen
+        none = -1,
+        king = 0,
+        pawn,
+        rook,
+        knight,
+        bishop,
+        queen
     
     Piece * = object
         team      : Team
         pieceType : PieceType
         rotation  : Rotation
+        hasMoved  : bool
     
     # container to store pieces
     PieceSet * = ref object
         pieces : Table[Position, Piece]
     
     FlagType * = enum
-        fOutOfBound = -1,
-        fEmpty = 0,
-        fEnemy,
-        fAlly
+        outOfBound = -1,
+        empty = 0,
+        enemy,
+        ally
 
 
 # Constants
 const
-    NO_TEAM = -1
+    noTeam = -1
     
-    NO_PIECE * = Piece(
-        team      : NO_TEAM,
-        pieceType : tNone,
+    noPiece * = Piece(
+        team      : noTeam,
+        pieceType : PieceType.none,
         rotation  : 0)
 
 
@@ -44,50 +45,51 @@ const
 ### PIECE SET
 
 # accessors
-proc `[]` * (pset: PieceSet, pos: Position): Piece {.inline.} =
-    pset.pieces.getOrDefault(pos, NO_PIECE)
+proc `[]` * (pieceSet: PieceSet, pos: Position): Piece {.inline.} =
+    pieceSet.pieces.getOrDefault(pos, noPiece)
 
-proc `[]=` * (pset: var PieceSet, pos: Position, piece: Piece) {.inline.} =
-    pset.pieces[pos] = piece
+proc `[]=` * (pieceSet: var PieceSet, pos: Position, piece: Piece) {.inline.} =
+    pieceSet.pieces[pos] = piece
 
 # simply return the flag for the given cell
-proc getFlag * (pset: PieceSet, pos: Position, team: Team): FlagType {.inline.} =
+proc getFlag * (pieceSet: PieceSet, pos: Position, team: Team): FlagType {.inline.} =
     # try to find an other piece at that location
-    let  other = pset[pos].team
-    if   other <= NO_TEAM: fEmpty
-    elif other != team   : fEnemy
-    else                 : fAlly
+    let  other = pieceSet[pos].team
+    if   other <= noTeam: FlagType.empty
+    elif other != team  : FlagType.enemy
+    else                : FlagType.ally
 
 # generate a deep copy of the piece set
-proc clone * (pset: PieceSet): PieceSet {.inline.} =
-    PieceSet(pieces: pset.pieces)
+proc clone * (pieceSet: PieceSet): PieceSet {.inline.} =
+    PieceSet(pieces: pieceSet.pieces)
 
 # move a piece from a location to another
-proc move * (pset: var PieceSet, from_pos: Position, to_pos: Position) {.inline.} =
-    pset[  to_pos] = pset[from_pos]
-    pset[from_pos] = NO_PIECE
+proc move * (pieceSet: var PieceSet, fromPos: Position, toPos: Position) {.inline.} =
+    pieceSet[toPos  ] = pieceSet[fromPos]
+    pieceSet[fromPos] = noPiece
+
+
+const 
+    noMoves   * : seq[Vec2i] = @[]
+    cardinals * : seq[Vec2i] = @[( 1,  0), ( 0,  1), (-1,  0), ( 0, -1)]
+    ordinals  * : seq[Vec2i] = @[( 1,  1), (-1,  1), (-1, -1), ( 1, -1)]
+    radials   * : seq[Vec2i] = @[( 1,  0), ( 1,  1), ( 0,  1), (-1,  1), (-1,  0), (-1, -1), ( 0, -1), ( 1, -1)]
+    eques     * : seq[Vec2i] = @[( 2,  1), ( 1,  2), (-1,  2), (-2,  1), (-2, -1), (-1, -2), ( 1, -2), ( 2, -1)]
 
 
 # get the list of moves for the given type of piece
-proc leaperDirections * (ptype: PieceType): seq[Vec2i] {.inline.} =
-    case ptype:
-        of tKing:
-            return @[(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
-        of tKnight:
-            return @[(2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1)]
-        else:
-            return @[]
+proc leaperDirections * (pieceType: PieceType): seq[Vec2i] {.inline.} =
+    return case pieceType:
+        of PieceType.king  : radials
+        of PieceType.knight: eques
+        else               : noMoves
 
 
 # get the list of moves for the given type of piece
-proc riderDirections * (ptype: PieceType): seq[Vec2i] {.inline.} =
-    case ptype:
-        of tQueen:
-            return @[(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
-        of tBishop:
-            return @[(1, 1), (-1, 1), (-1, -1), (1, -1)]
-        of tRook:
-            return @[(1, 0), (0, 1), (-1, 0), (0, -1), ]
-        else:
-            return @[]
+proc riderDirections * (pieceType: PieceType): seq[Vec2i] {.inline.} =
+    return case pieceType:
+        of PieceType.queen : radials
+        of PieceType.bishop: ordinals
+        of PieceType.rook  : cardinals
+        else               : noMoves
 

@@ -5,7 +5,7 @@ import
 
 # build a simple square board
 proc makeBoard * (width, height : uint) : Board =
-    let zone : Zone = (0, (VECTOR_ZERO, (width.int, height.int)))
+    let zone : Zone = (0, (vecZero, (width.int, height.int)))
     Board(validZones: @[zone], warpZones: @[])
 
 
@@ -22,8 +22,8 @@ proc makeBoardRoller * (mainWidth, mainHeight, holeWidth, holeHeight : uint) : B
         validZones: @[
             (0, ((holeWidth.int + diffWidth,   0), endPoint)), 
             (0, ((0, holeHeight.int + diffHeight), endPoint)), 
-            (0, (VECTOR_ZERO, sizeHeight)), 
-            (0, (VECTOR_ZERO, sizeWidth ))
+            (0, (vecZero, sizeHeight)), 
+            (0, (vecZero, sizeWidth ))
         ], 
         warpZones: @[]
     )
@@ -32,13 +32,13 @@ proc makeBoardRoller * (mainWidth, mainHeight, holeWidth, holeHeight : uint) : B
 # build a circular board
 proc makeBoardCircle * (radius, perimeter : uint) : Board =
     let size : Vec2i = (perimeter.int, radius.int)
-    let zone : Zone  = (0, (VECTOR_ZERO, size))
+    let zone : Zone  = (0, (vecZero, size))
 
     let refLeft : Vec2i = (-perimeter.int, radius.int)
     let warpLeft = Warp(
         zone      : (0, (refLeft, refLeft + size)),
         reference : refLeft,
-        toTarget  : VECTOR_ZERO,
+        toTarget  : vecZero,
         rotate    : 0,
         toLevel   : 0
     )
@@ -46,7 +46,7 @@ proc makeBoardCircle * (radius, perimeter : uint) : Board =
     let warpRight = Warp(
         zone      : (0, (size, size * 2)),
         reference : size,
-        toTarget  : VECTOR_ZERO,
+        toTarget  : vecZero,
         rotate    : 0,
         toLevel   : 0
     )
@@ -63,7 +63,7 @@ proc makeBoardPolygon * (radius, numberOfSides : uint) : Board =
     let refTop   : Vec2i = (0         , radius.int)
     let refRight : Vec2i = (radius.int, 0         )
 
-    let rectCenter : Rec2i = (VECTOR_ZERO, size)
+    let rectCenter : Rec2i = (vecZero, size)
     let rectTop    : Rec2i = (refTop     , refTop   + size)
     let rectRight  : Rec2i = (refRight   , refRight + size)
 
@@ -98,7 +98,7 @@ proc makeBoardSingular (width, numberOfSides : uint) : Board =
 
     # build the pyramid template first
     var pyramid = newSeq[Rec2i](width - 2)
-    pyramid[0] = (VECTOR_ZERO, (width.int, 1))
+    pyramid[0] = (vecZero, (width.int, 1))
     for i in 1 .. len(pyramid):
         pyramid[i] = ((i, i), (width.int - i + 1, i + 1))
     
@@ -109,7 +109,7 @@ proc makeBoardSingular (width, numberOfSides : uint) : Board =
     for l in 0 ..< nbSides:
 
         result.warpZones.add(Warp(
-            zone      : (l, (VECTOR_ZERO, (half, width.int))),
+            zone      : (l, (vecZero, (half, width.int))),
             reference : centerPoint,
             toTarget  : centerPoint,
             rotate    : 1,
